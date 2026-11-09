@@ -132,6 +132,33 @@ Mostra em tempo real o ângulo da haste, o braço, a energia, o torque do PID e 
 
 ---
 
+## Resultados do ensaio no hardware (09/11/2026)
+
+![Painel durante o equilíbrio](docs/ensaio-2026-11-09/painel_equilibrando.png)
+
+- 🎥 **Vídeo do ensaio:** [docs/ensaio-2026-11-09/video_equilibrio.mp4](docs/ensaio-2026-11-09/video_equilibrio.mp4)
+
+### Desempenho do equilíbrio (PID do LGR)
+
+Trechos em que o PID segurou a haste no topo (desconsiderando os 0,5 s iniciais da captura):
+
+| Trecho | Duração | Erro RMS da haste | Erro máximo | Faixa do braço | Como terminou |
+|---|---|---|---|---|---|
+| 94,9 – 120,7 s | 25,8 s | 0,50° | 3,2° | −30° a +12° | parado pelo operador |
+| 253,3 – 282,5 s | 29,2 s | 0,42° | 1,5° | −37° a +15° | parado pelo operador |
+| 340,5 – 403,2 s | **62,7 s** | **0,42°** | **2,0°** | −33° a +34° | fim da gravação |
+
+Em regime, a haste fica a **menos de 2° do topo** e o braço oscila dentro de **±40°**, longe do limite do cabo. O tempo total equilibrando no ensaio foi de **132,7 s**.
+
+### Observações
+
+- **Capturas com o braço em movimento terminaram em `FALHA`.** Em várias tentativas curtas (por exemplo 129–130 s e 135–139 s), a haste foi capturada logo depois de o braço voltar do limite (modo `RETORNO`). O PID segurou a haste, mas o braço derivou até **±130° em menos de 1 s** e a proteção do cabo desligou o motor. A realimentação do braço no equilíbrio (`K_POS_BRACO`, `K_VEL_BRACO`) é fraca para segurar essa deriva; é o próximo ponto a melhorar.
+- **A subida automática a partir de baixo ainda não aparece neste registro:** as capturas do ensaio foram com a haste levada perto do topo. O swing-up completo deve ser registrado num próximo ensaio.
+- O motor de passo não perdeu a referência: depois de cada `RETORNO` o braço voltou ao centro (±3°).
+
+---
+
 ## Estado da validação
 
-A lógica foi validada em um simulador do pêndulo de Furuta que reproduzia o firmware linha a linha, variando comprimento do braço, atrito, tipo de haste e sinais do motor. O teste no hardware real ainda está em andamento.
+- **Equilíbrio no topo:** validado no hardware (resultados acima).
+- **Swing-up:** a lógica foi validada em um simulador do pêndulo de Furuta que reproduzia o firmware linha a linha, variando comprimento do braço, atrito, tipo de haste e sinais do motor. O registro no hardware ainda está pendente.
